@@ -1,0 +1,277 @@
+{
+  "pluginAlias": "KasaPython",
+  "pluginType": "platform",
+  "singular": true,
+  "strictValidation": true,
+  "headerDisplay": "Kasa Python Plugin.<p>Most users do not require configuration and can just click \"Save\" to get started. See [README](https://github.com/ZeliardM/homebridge-kasa-python/blob/master/README.md) for more information.</p>",
+  "footerDisplay": "",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "required": true,
+        "default": "KasaPython",
+        "minLength": 1
+      },
+      "enableCredentials": {
+        "title": "Enable Credentials",
+        "type": "boolean",
+        "description": "Enable to use username and password for authentication.",
+        "default": false
+      },
+      "username": {
+        "title": "Username",
+        "type": "string",
+        "description": "Username for the Kasa account. Required for cloud devices.",
+        "placeholder": "Username",
+        "minLength": 1,
+        "condition": {
+          "functionBody": "return model.enableCredentials;"
+        }
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "description": "Password for the Kasa account. Required for cloud devices.",
+        "placeholder": "Password",
+        "minLength": 1,
+        "condition": {
+          "functionBody": "return model.enableCredentials && model.username && model.username !== '';"
+        }
+      },
+      "enableEnergyMonitoring": {
+        "title": "Enable Energy Monitoring",
+        "type": "boolean",
+        "description": "Enable to add energy monitoring characteristics (Volts, Amperes, Watts, KiloWattHours) to supported devices.",
+        "default": false
+      },
+      "powerThreshold": {
+        "title": "Outlet In Use Power Threshold (Watts)",
+        "type": "number",
+        "description": "Power threshold used to mark OutletInUse as true on devices with energy reporting support. Values must be at least 0.001 and may use up to three decimal places.",
+        "default": 2,
+        "minimum": 0.001
+      },
+      "logEnergyMonitoring": {
+        "title": "Log Energy Monitoring Events",
+        "type": "boolean",
+        "description": "Enable logging of power/energy monitoring characteristic updates (Volts, Amperes, Watts, KiloWattHours).",
+        "default": false
+      },
+      "hideHomeKitMatter": {
+        "title": "Hide HomeKit or Matter Devices",
+        "type": "boolean",
+        "description": "Hide HomeKit or Matter Devices from Homebridge.",
+        "default": true
+      },
+      "pollingInterval": {
+        "title": "Polling Interval (seconds)",
+        "type": "integer",
+        "description": "How often to check device status in the background (seconds)",
+        "default": 5
+      },
+      "discoveryPollingInterval": {
+        "title": "Discovery Polling Interval (seconds)",
+        "type": "integer",
+        "description": "How often to discover new devices in the background (seconds)",
+        "default": 300
+      },
+      "offlineInterval": {
+        "title": "Offline Interval (days)",
+        "type": "integer",
+        "description": "How often to remove offline devices in the background (days)",
+        "default": 7
+      },
+      "additionalBroadcasts": {
+        "title": "Additional Broadcast Addresses",
+        "type": "array",
+        "items": {
+          "title": "Broadcast Address",
+          "type": "string"
+        },
+        "description": "List of additional broadcast addresses to discover devices on. Format: 192.168.1.255"
+      },
+      "manualDevices": {
+        "title": "Manual List Of Devices",
+        "type": "array",
+        "items": {
+          "title": "Manual Device",
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "title": "Host"
+            }
+          }
+        },
+        "description": "List of devices to manually add."
+      },
+      "excludeMacAddresses": {
+        "title": "Exclude MAC Addresses",
+        "type": "array",
+        "items": {
+          "title": "MAC Address",
+          "type": "string"
+        },
+        "description": "List of MAC addresses to exclude from device discovery. Format: AA:BB:CC:11:22:33"
+      },
+      "includeMacAddresses": {
+        "title": "Include MAC Addresses",
+        "type": "array",
+        "items": {
+          "title": "MAC Address",
+          "type": "string"
+        },
+        "description": "List of MAC addresses to include in device discovery. Format: AA:BB:CC:11:22:33"
+      },
+      "waitTimeUpdate": {
+        "title": "Wait Time Update (milliseconds)",
+        "type": "integer",
+        "description": "The time to wait to combine similar commands for a device before sending a command to a device (milliseconds). Default: 100.",
+        "default": 100
+      },
+      "pythonPath": {
+        "title": "Python Path",
+        "type": "string",
+        "description": "Full Path to the Python executable. If not set, the plugin will try to find the Python executable or default to the System Path.",
+        "placeholder": "Enter custom Full Python Path if needed, i.e. /usr/bin/python3.11",
+        "minLength": 1
+      },
+      "advancedPythonLogging": {
+        "title": "Advanced Python Logging",
+        "type": "boolean",
+        "description": "Enable detailed logging for Python scripts. Only shows logs when Debug Mode in Homebridge is enabled.",
+        "default": false
+      }
+    }
+  },
+  "layout": [
+    "name",
+    "enableCredentials",
+    {
+      "type": "conditional",
+      "condition": {
+        "functionBody": "return model.enableCredentials;"
+      },
+      "items": [
+        "username",
+        "password"
+      ]
+    },
+    {
+      "type": "help",
+      "helpvalue": "Username and Password will be required for specific devices only."
+    },
+    {
+      "type": "fieldset",
+      "title": "Energy (Optional)",
+      "description": "Configure energy-based Outlet In Use handling and optional energy characteristics.",
+      "expandable": true,
+      "items": [
+        "enableEnergyMonitoring",
+        "powerThreshold",
+        "logEnergyMonitoring"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "HomeKit (Optional)",
+      "description": "Customize HomeKit options.",
+      "expandable": true,
+      "items": [
+        "hideHomeKitMatter"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Device Discovery (Optional)",
+      "description": "Customize device discovery",
+      "expandable": true,
+      "items": [
+        "pollingInterval",
+        "discoveryPollingInterval",
+        "offlineInterval",
+        {
+          "type": "fieldset",
+          "title": "Additional Broadcasts",
+          "description": "Specify additional broadcast addresses for device discovery.",
+          "expandable": true,
+          "items": [
+            {
+              "key": "additionalBroadcasts",
+              "type": "array",
+              "items": {
+                "title": "Broadcast Address",
+                "type": "string"
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldset",
+          "title": "Manual Devices",
+          "description": "If automatic discovery is not working, try this.",
+          "expandable": true,
+          "items": [
+            {
+              "key": "manualDevices",
+              "type": "array",
+              "items": [
+                "manualDevices[].host"
+              ]
+            },
+            {
+              "type": "help",
+              "helpvalue": "Before resorting to manually specifying devices. Try setting the broadcast address and check your router/switch/firewall configuration. You must assign static IP addresses to your devices to use this configuration."
+            }
+          ]
+        },
+        {
+          "type": "fieldset",
+          "title": "Exclude MAC Addresses",
+          "description": "Specify MAC addresses to exclude from device discovery.",
+          "expandable": true,
+          "items": [
+            {
+              "key": "excludeMacAddresses",
+              "type": "array",
+              "items": {
+                "title": "MAC Address",
+                "type": "string"
+              }
+            }
+          ]
+        },
+        {
+          "type": "fieldset",
+          "title": "Include MAC Addresses",
+          "description": "Specify MAC addresses to include in device discovery.",
+          "expandable": true,
+          "items": [
+            {
+              "key": "includeMacAddresses",
+              "type": "array",
+              "items": {
+                "title": "MAC Address",
+                "type": "string"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Advanced Settings (Optional)",
+      "description": "Don't change these, unless you understand what you're doing.",
+      "expandable": true,
+      "items": [
+        "waitTimeUpdate",
+        "pythonPath",
+        "advancedPythonLogging"
+      ]
+    }
+  ]
+}

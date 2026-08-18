@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": [
+      "DOM",
+      "ES2022"
+    ],
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2022",
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "eslint.config.mjs",
+    "homebridge-ui",
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
