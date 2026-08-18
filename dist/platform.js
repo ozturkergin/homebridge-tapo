@@ -129,7 +129,7 @@ export default class KasaPythonPlatform {
             if (this.api.versionGreaterOrEqual &&
                 !(this.api.versionGreaterOrEqual('1.8.0') ||
                     this.api.versionGreaterOrEqual('2.0.0'))) {
-                throw new Error(`homebridge-kasa-python requires Homebridge ^1.8.0 || ^2.0.0-beta.0. Currently running: ${this.api.serverVersion}`);
+                throw new Error(`homebridge-tapo-ergin requires Homebridge ^1.8.0 || ^2.0.0-beta.0. Currently running: ${this.api.serverVersion}`);
             }
             else {
                 this.log.debug(`Homebridge version ${this.api.serverVersion} satisfies the requirement ^1.8.0 || ^2.0.0-beta.0`);

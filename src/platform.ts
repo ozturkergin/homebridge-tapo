@@ -176,7 +176,7 @@ export default class KasaPythonPlatform implements DynamicPlatformPlugin {
         )
       ) {
         throw new Error(
-          `homebridge-kasa-python requires Homebridge ^1.8.0 || ^2.0.0-beta.0. Currently running: ${this.api.serverVersion}`,
+          `homebridge-tapo-ergin requires Homebridge ^1.8.0 || ^2.0.0-beta.0. Currently running: ${this.api.serverVersion}`,
         );
       } else {
         this.log.debug(
