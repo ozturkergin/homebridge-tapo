@@ -93,7 +93,7 @@ export const defaultConfig: KasaPythonConfig = {
     logEnergyMonitoring: false,
   },
   homekitOptions: {
-    hideHomeKitMatter: true,
+    hideHomeKitMatter: false,
   },
   discoveryOptions: {
     pollingInterval: 5,

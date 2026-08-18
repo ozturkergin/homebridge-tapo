@@ -64,7 +64,7 @@
         "title": "Hide HomeKit or Matter Devices",
         "type": "boolean",
         "description": "Hide HomeKit or Matter Devices from Homebridge.",
-        "default": true
+        "default": false
       },
       "pollingInterval": {
         "title": "Polling Interval (seconds)",

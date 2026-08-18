@@ -36,7 +36,7 @@ export const defaultConfig = {
         logEnergyMonitoring: false,
     },
     homekitOptions: {
-        hideHomeKitMatter: true,
+        hideHomeKitMatter: false,
     },
     discoveryOptions: {
         pollingInterval: 5,

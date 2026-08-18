@@ -114,8 +114,25 @@ export async function runCommand(logger, command, args = [], options, hideStdout
         if (stdout.length > MAX_BUFFER_SIZE) {
             stdout = stdout.slice(-MAX_BUFFER_SIZE);
         }
-        if (!hideStdout) {
-            logger.debug(`STDOUT: ${data.trim()}`);
+        const lines = data.trim().split(/\r?\n/);
+        for (const line of lines) {
+            if (!line)
+                continue;
+            if (line.includes('[Kasa API] INFO:')) {
+                logger.info(line.replace(/.*\[Kasa API\] INFO:\s*/, ''));
+            }
+            else if (line.includes('[Kasa API] WARNING:')) {
+                logger.warn(line.replace(/.*\[Kasa API\] WARNING:\s*/, ''));
+            }
+            else if (line.includes('[Kasa API] ERROR:')) {
+                logger.error(line.replace(/.*\[Kasa API\] ERROR:\s*/, ''));
+            }
+            else if (line.includes('[Kasa API] DEBUG:')) {
+                logger.debug(line.replace(/.*\[Kasa API\] DEBUG:\s*/, ''));
+            }
+            else if (!hideStdout) {
+                logger.debug(`STDOUT: ${line}`);
+            }
         }
     });
     p.stderr.setEncoding('utf8').on('data', data => {
@@ -123,8 +140,16 @@ export async function runCommand(logger, command, args = [], options, hideStdout
         if (stderr.length > MAX_BUFFER_SIZE) {
             stderr = stderr.slice(-MAX_BUFFER_SIZE);
         }
-        if (!hideStderr) {
-            logger.error(`STDERR: ${data.trim()}`);
+        const lines = data.trim().split(/\r?\n/);
+        for (const line of lines) {
+            if (!line)
+                continue;
+            if (line.includes('[Kasa API] ERROR:')) {
+                logger.error(line.replace(/.*\[Kasa API\] ERROR:\s*/, ''));
+            }
+            else if (!hideStderr) {
+                logger.error(`STDERR: ${line}`);
+            }
         }
     });
     if (returnProcess) {
