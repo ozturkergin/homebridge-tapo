@@ -3,8 +3,6 @@ user_storage/*
 !user_storage/config.example.json
 .venv
 
-# Ignore compiled code
-dist
 
 # ------------- Defaults ------------- #
 
@@ -91,7 +89,6 @@ web_modules/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/

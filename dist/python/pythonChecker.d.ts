@@ -1,0 +1,32 @@
+import type KasaPythonPlatform from '../platform.js';
+declare class PythonChecker {
+    private readonly log;
+    private readonly platform;
+    private readonly advancedPythonLogging;
+    private readonly pythonExecutables;
+    private readonly pluginDirPath;
+    private readonly venvPath;
+    private readonly venvConfigPath;
+    private readonly requirementsPath;
+    private pythonExecutable;
+    private venvPipExecutable;
+    private venvPythonExecutable;
+    constructor(platform: KasaPythonPlatform);
+    allInOne(): Promise<void>;
+    private ensurePluginDir;
+    private ensurePythonVersion;
+    private getPythonVersion;
+    private resolvePythonExecutable;
+    private setPythonExecutables;
+    private ensureVenvCreated;
+    private isVenvCreated;
+    private createVenv;
+    private ensureVenvUsesCorrectPythonHome;
+    private getPythonHome;
+    private updatePip;
+    private ensureVenvRequirementsSatisfied;
+    private areRequirementsSatisfied;
+    private stringToObject;
+    private installRequirements;
+}
+export default PythonChecker;
