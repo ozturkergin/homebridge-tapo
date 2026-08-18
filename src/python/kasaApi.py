@@ -88,7 +88,7 @@ def serialize_child(child: Device) -> dict[str, Any]:
     child_info = {
         "alias": child.alias,
         "id": child.device_id.split('_', 1)[1] if '_' in child.device_id else child.device_id,
-        "state": child.features["state"].value,
+        "state": child.is_on,
     }
     light_module = child.modules.get(Module.Light)
     fan_module = child.modules.get(Module.Fan)
@@ -155,7 +155,7 @@ def custom_serializer(device: Device) -> dict[str, Any]:
         sorted_children = sorted(device.children, key=lambda c: _extract_child_suffix_index(c.device_id))
         sys_info["children"] = [serialize_child(child) for child in sorted_children]
     else:
-        sys_info.update({"state": device.features["state"].value})
+        sys_info.update({"state": device.is_on})
         if light_module:
             sys_info.update(get_light_info(device))
         if fan_module:
