@@ -20,12 +20,6 @@ This Homebridge plugin allows you to control TP-Link Kasa and Tapo devices withi
 sudo hb-service add https://github.com/ozturkergin/homebridge-tapo
 ```
 
-### Via npm
-
-```bash
-sudo npm install -g https://github.com/ozturkergin/homebridge-tapo
-```
-
 ## Configuration
 
 Add the platform configuration to your Homebridge `config.json`:
