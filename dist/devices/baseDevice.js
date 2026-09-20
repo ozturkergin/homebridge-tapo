@@ -24,7 +24,10 @@ export default class HomeKitDevice {
         this.category = category;
         this.categoryName = categoryName;
         this.deviceManager = platform.deviceManager;
-        this.log = prefixLogger(platform.log, `[${this.name}]`);
+        this.log = prefixLogger(platform.log, () => {
+            const host = this.host;
+            return host ? `[${this.name}] [${host}]` : `[${this.name}]`;
+        });
         this.homebridgeAccessory = this.initializeAccessory();
         this.homebridgeAccessory.on("identify" /* PlatformAccessoryEvent.IDENTIFY */, () => this.identify());
         platform.periodicDeviceDiscoveryEmitter.on('periodicDeviceDiscoveryComplete', () => {
@@ -46,6 +49,7 @@ export default class HomeKitDevice {
             this.log.debug(`Creating new Platform Accessory [${this.id}] [${uuid}] category: ${this.categoryName}`);
             accessory = new this.platform.api.platformAccessory(this.name, uuid, this.category);
             accessory.context.deviceId = this.id;
+            accessory.context.host = this.host;
             accessory.context.lastSeen = this.kasaDevice.last_seen;
             accessory.context.offline = this.kasaDevice.offline;
             this.platform.registerPlatformAccessory(accessory);
@@ -69,6 +73,7 @@ export default class HomeKitDevice {
             displayNameChanged = true;
         }
         accessory.context.deviceId = this.id;
+        accessory.context.host = this.host;
         accessory.context.lastSeen = this.kasaDevice.last_seen;
         accessory.context.offline = this.kasaDevice.offline;
         this.platform.configuredAccessories.set(accessory.UUID, accessory);
@@ -81,6 +86,9 @@ export default class HomeKitDevice {
     }
     get name() {
         return this.kasaDevice.sys_info.alias;
+    }
+    get host() {
+        return this.kasaDevice.sys_info?.host;
     }
     get manufacturer() {
         return 'TP-Link';
@@ -155,6 +163,9 @@ export default class HomeKitDevice {
             throw new Error(`No sys_info returned for ${host}. Marking offline and stopping polling.`);
         }
         this.kasaDevice.sys_info = updatedSysInfo;
+        if (this.homebridgeAccessory) {
+            this.homebridgeAccessory.context.host = this.host;
+        }
         this.log.debug(`Updated sys_info: ${updatedSysInfo.alias ?? host}`);
     }
     async refreshAndUpdateCharacteristics(forceUpdate, skipFetch = false) {
@@ -312,7 +323,8 @@ export default class HomeKitDevice {
                             this.updateValue(this.primaryService, char, context.alias, postSetValue);
                         }
                         else {
-                            this.log.info(`Set ${this.platform.lsc(this.primaryService, char)} on ${context.alias} to ${postSetValue}`);
+                            const target = context.alias && context.alias !== this.name ? ` on ${context.alias}` : '';
+                            this.log.info(`Set ${this.platform.lsc(this.primaryService, char)}${target} to ${postSetValue}`);
                         }
                     }
                 }
@@ -437,7 +449,8 @@ export default class HomeKitDevice {
     updateValue(service, characteristic, deviceAlias, value, logUpdate = true) {
         const isEnergyCharacteristic = this.isEnergyMonitoringCharacteristic(characteristic);
         if (logUpdate && (!isEnergyCharacteristic || (isEnergyCharacteristic && this.platform.config.energyOptions.logEnergyMonitoring))) {
-            this.log.info(`Updating ${this.platform.lsc(service, characteristic)} on ${deviceAlias} to ${value}`);
+            const target = deviceAlias && deviceAlias !== this.name ? ` on ${deviceAlias}` : '';
+            this.log.info(`Updating ${this.platform.lsc(service, characteristic)}${target} to ${value}`);
         }
         characteristic.updateValue(value);
     }

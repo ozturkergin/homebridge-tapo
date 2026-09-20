@@ -112,7 +112,7 @@ export default class DeviceManager {
       this.updateDeviceAlias(sysInfo);
       return sysInfo;
     } catch (error) {
-      this.handleAxiosError(error, 'getSysInfo');
+      this.handleAxiosError(error, `getSysInfo [${host}]`);
       throw error;
     }
   }
@@ -158,7 +158,7 @@ export default class DeviceManager {
         this.log.error(`Action failed (${feature}/${action}) on ${host}: ${response.data.message}`);
       }
     } catch (error) {
-      this.handleAxiosError(error, 'controlDevice');
+      this.handleAxiosError(error, `controlDevice [${host}]`);
     }
   }
 

@@ -410,9 +410,10 @@ export default class KasaPythonPlatform {
         }
     }
     configureAccessory(accessory) {
-        this.log.debug(`Configuring Platform Accessory: [${accessory.displayName}] UUID: ${accessory.UUID}`);
+        const hostInfo = accessory.context.host ? ` [${accessory.context.host}]` : '';
+        this.log.debug(`Configuring Platform Accessory: [${accessory.displayName}]${hostInfo} UUID: ${accessory.UUID}`);
         if (!accessory.context.lastSeen && !accessory.context.offline) {
-            this.log.debug(`Setting initial lastSeen and offline status for Platform Accessory: [${accessory.displayName}]`);
+            this.log.debug(`Setting initial lastSeen and offline status for Platform Accessory: [${accessory.displayName}]${hostInfo}`);
             accessory.context.lastSeen = new Date();
             accessory.context.offline = false;
         }
@@ -420,30 +421,30 @@ export default class KasaPythonPlatform {
             const now = new Date();
             const timeSinceLastSeen = now.getTime() - new Date(accessory.context.lastSeen).getTime();
             const offlineInterval = this.config.discoveryOptions.offlineInterval;
-            this.log.debug(`Platform Accessory [${accessory.displayName}] last seen ${timeSinceLastSeen}ms ago, ` +
+            this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} last seen ${timeSinceLastSeen}ms ago, ` +
                 `offline interval is ${offlineInterval}ms, offline status: ${accessory.context.offline}`);
             if (timeSinceLastSeen > offlineInterval && accessory.context.offline === true) {
-                this.log.debug(`Platform Accessory [${accessory.displayName}] is offline and outside the offline interval, ` +
+                this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} is offline and outside the offline interval, ` +
                     'moving to offlineAccessories');
                 this.configuredAccessories.delete(accessory.UUID);
                 this.offlineAccessories.set(accessory.UUID, accessory);
                 return;
             }
             else if (timeSinceLastSeen < offlineInterval && accessory.context.offline === true) {
-                this.log.debug(`Platform Accessory [${accessory.displayName}] is offline and within offline interval.`);
+                this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} is offline and within offline interval.`);
             }
             else if (accessory.context.offline === false) {
-                this.log.debug(`Platform Accessory [${accessory.displayName}] is online, updating lastSeen time.`);
+                this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} is online, updating lastSeen time.`);
                 this.updateAccessoryStatus(accessory, now, false);
             }
         }
         if (!this.configuredAccessories.has(accessory.UUID)) {
-            this.log.debug(`Platform Accessory [${accessory.displayName}] with UUID [${accessory.UUID}] ` +
+            this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} with UUID [${accessory.UUID}] ` +
                 'is not in configuredAccessories, adding it.');
             this.configuredAccessories.set(accessory.UUID, accessory);
         }
         else {
-            this.log.debug(`Platform Accessory [${accessory.displayName}] with UUID ` +
+            this.log.debug(`Platform Accessory [${accessory.displayName}]${hostInfo} with UUID ` +
                 `[${accessory.UUID}] is already in configuredAccessories.`);
         }
     }
@@ -454,21 +455,21 @@ export default class KasaPythonPlatform {
             return;
         }
         if (this.homekitDevicesById.has(deviceId)) {
-            this.log.debug(`HomeKit device already added: [${deviceAlias}] ${deviceType} [${deviceId}]`);
+            this.log.debug(`HomeKit device already added: [${deviceAlias}] [${deviceHost}] ${deviceType} [${deviceId}]`);
             return;
         }
-        this.log.info(`Adding HomeKit device: [${deviceAlias}] ${deviceType} [${deviceId}] at host [${deviceHost}]`);
+        this.log.info(`Adding HomeKit device: [${deviceAlias}] [${deviceHost}] ${deviceType} [${deviceId}]`);
         const homekitDevice = await this.createHomeKitDevice(device);
         if (homekitDevice) {
             this.homekitDevicesById.set(deviceId, homekitDevice);
-            this.log.debug(`HomeKit device [${deviceAlias}] ${deviceType} [${deviceId}] successfully added`);
+            this.log.debug(`HomeKit device [${deviceAlias}] [${deviceHost}] ${deviceType} [${deviceId}] successfully added`);
         }
         else {
-            this.log.error(`Failed to add HomeKit device for: [${deviceAlias}] ${deviceType} [${deviceId}]`);
+            this.log.error(`Failed to add HomeKit device for: [${deviceAlias}] [${deviceHost}] ${deviceType} [${deviceId}]`);
         }
     }
     async createHomeKitDevice(kasaDevice) {
-        this.log.debug('Creating HomeKit device for:', kasaDevice.sys_info);
+        this.log.debug(`[${kasaDevice.sys_info?.alias}] [${kasaDevice.sys_info?.host}] Creating HomeKit device for:`, kasaDevice.sys_info);
         return await create(this, kasaDevice);
     }
 }

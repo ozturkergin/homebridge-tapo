@@ -6,6 +6,7 @@ import type { KasaPythonConfig } from './config.js';
 import type { EnergyCharacteristics } from './devices/energyCharacteristics.js';
 export type KasaPythonAccessoryContext = {
     deviceId?: string;
+    host?: string;
     lastSeen?: Date;
     offline?: boolean;
 };

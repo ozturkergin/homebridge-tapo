@@ -134,7 +134,8 @@ export default abstract class HomeKitParentDevice extends HomeKitDevice {
           if (desc.syncHomeKitValueAfterSet) {
             this.updateValue(service, char, context.alias, postSetValue as CharacteristicValue);
           } else {
-            this.log.info(`Set ${this.platform.lsc(service, char)} on ${context.alias} to ${postSetValue}`);
+            const target = context.alias && context.alias !== this.name ? ` on ${context.alias}` : '';
+            this.log.info(`Set ${this.platform.lsc(service, char)}${target} to ${postSetValue}`);
           }
         }
         this.previousSnapshot = JSON.parse(JSON.stringify(this.kasaDevice));

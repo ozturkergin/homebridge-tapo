@@ -113,7 +113,12 @@ export function prefixLogger(logger: Logger, prefix: string | (() => string)): L
     return acc;
   }, {} as Logging);
 
-  (clonedLogger as { prefix: string | (() => string) }).prefix = typeof logger.prefix === 'string' ? `${prefix} ${logger.prefix}` : prefix;
+  (clonedLogger as { prefix: string | (() => string) }).prefix =
+    typeof prefix === 'function'
+      ? () => (typeof logger.prefix === 'string' ? `${prefix()} ${logger.prefix}` : prefix())
+      : typeof logger.prefix === 'string'
+        ? `${prefix} ${logger.prefix}`
+        : prefix;
 
   return clonedLogger;
 }
@@ -162,7 +167,9 @@ export async function runCommand(
     }
     const lines = data.trim().split(/\r?\n/);
     for (const line of lines) {
-      if (!line) continue;
+      if (!line) {
+        continue;
+      }
       if (line.includes('[Kasa API] INFO:')) {
         logger.info(line.replace(/.*\[Kasa API\] INFO:\s*/, ''));
       } else if (line.includes('[Kasa API] WARNING:')) {
@@ -184,7 +191,9 @@ export async function runCommand(
     }
     const lines = data.trim().split(/\r?\n/);
     for (const line of lines) {
-      if (!line) continue;
+      if (!line) {
+        continue;
+      }
       if (line.includes('[Kasa API] ERROR:')) {
         logger.error(line.replace(/.*\[Kasa API\] ERROR:\s*/, ''));
       } else if (!hideStderr) {

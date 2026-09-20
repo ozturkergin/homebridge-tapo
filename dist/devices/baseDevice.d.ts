@@ -26,6 +26,7 @@ export default abstract class HomeKitDevice {
     private updateAccessory;
     get id(): string;
     get name(): string;
+    get host(): string;
     get manufacturer(): string;
     get model(): string;
     get serialNumber(): string;

@@ -18,20 +18,21 @@ function isSwitch(device) {
 }
 export default async function createDevice(platform, kasaDevice) {
     let instance;
+    const prefix = `[${kasaDevice.sys_info?.alias}]${kasaDevice.sys_info?.host ? ` [${kasaDevice.sys_info.host}]` : ''}`;
     if (isLightBulb(kasaDevice)) {
-        platform.log.debug('Device classified as LightBulb:', kasaDevice.sys_info.model);
+        platform.log.debug(`${prefix} Device classified as LightBulb:`, kasaDevice.sys_info.model);
         instance = new HomeKitDeviceLightBulb(platform, kasaDevice);
     }
     else if (isPlug(kasaDevice)) {
-        platform.log.debug('Device classified as Plug:', kasaDevice.sys_info.model);
+        platform.log.debug(`${prefix} Device classified as Plug:`, kasaDevice.sys_info.model);
         instance = new HomeKitDevicePlug(platform, kasaDevice);
     }
     else if (isPowerStrip(kasaDevice)) {
-        platform.log.debug('Device classified as PowerStrip:', kasaDevice.sys_info.model);
+        platform.log.debug(`${prefix} Device classified as PowerStrip:`, kasaDevice.sys_info.model);
         instance = new HomeKitDevicePowerStrip(platform, kasaDevice);
     }
     else if (isSwitch(kasaDevice)) {
-        platform.log.debug('Device classified as Switch:', kasaDevice.sys_info.model);
+        platform.log.debug(`${prefix} Device classified as Switch:`, kasaDevice.sys_info.model);
         if (kasaDevice.sys_info.child_num > 0) {
             instance = new HomeKitDeviceSwitchWithChildren(platform, kasaDevice);
         }
@@ -40,14 +41,14 @@ export default async function createDevice(platform, kasaDevice) {
         }
     }
     else {
-        platform.log.error('Unknown device type; skipping:', kasaDevice.sys_info.model);
+        platform.log.error(`${prefix} Unknown device type; skipping:`, kasaDevice.sys_info.model);
         return undefined;
     }
     try {
         await instance.initialize();
     }
     catch (error) {
-        platform.log.error(`Error initializing device [${kasaDevice.sys_info.device_id}]:`, error);
+        platform.log.error(`${prefix} Error initializing device [${kasaDevice.sys_info.device_id}]:`, error);
         return undefined;
     }
     return instance;
