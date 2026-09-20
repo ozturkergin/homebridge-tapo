@@ -69,7 +69,7 @@ def _level_to_percent(level: int) -> int:
     mapping = {0: 0, 1: 25, 2: 50, 3: 75, 4: 100}
     return mapping[level]
 
-def log(message: str, level: str = "INFO", host: str | None = None, alias: str | None = None):
+def log(message: str, level: str = "DEBUG", host: str | None = None, alias: str | None = None):
     context = []
     if host:
         context.append(f"host={host}")

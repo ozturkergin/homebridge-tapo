@@ -171,7 +171,7 @@ export async function runCommand(
         continue;
       }
       if (line.includes('[Kasa API] INFO:')) {
-        logger.info(line.replace(/.*\[Kasa API\] INFO:\s*/, ''));
+        logger.debug(line.replace(/.*\[Kasa API\] INFO:\s*/, ''));
       } else if (line.includes('[Kasa API] WARNING:')) {
         logger.warn(line.replace(/.*\[Kasa API\] WARNING:\s*/, ''));
       } else if (line.includes('[Kasa API] ERROR:')) {
