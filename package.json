@@ -1,9 +1,10 @@
 {
-  "displayName": "Homebridge Tapo Ergin",
+  "displayName": "Homebridge Tapo",
   "name": "homebridge-tapo-ergin",
   "version": "1.0.0",
   "description": "Plugin that uses Python-Kasa API to communicate with Kasa Devices.",
   "license": "MIT",
+  "author": "ergin_ozturk",
   "type": "module",
   "repository": {
     "type": "git",

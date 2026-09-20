@@ -1,4 +1,4 @@
-# Homebridge Tapo Ergin
+# Homebridge Tapo
 
 A Homebridge plugin for controlling TP-Link Kasa and Tapo smart home devices using the `python-kasa` backend with full support for newer devices and protocols (including KLAP / Tapo L630 bulbs).
 
